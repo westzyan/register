@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=Content-Type content="text/html; charset=gb2312">
+<LINK href="../css/admin.css" type="text/css" rel="stylesheet">
+ <script tyle='css/javascript'>
+ function _set(sp_id)
+ {
+  var x=document.getElementsByTagName('span');
+  for (var i=0;i<x.length;i++) {
+     x[i].style.color='#036';
+    }
+      sp_id.style.color='red';
+ }
+ </script>
+</HEAD>
+<BODY>
+
+<TABLE height="100%" cellSpacing=0 cellPadding=0 width=170 
+background=../images/menu_bg.jpg border=0>
+  <TR>
+    <TD vAlign=top align=middle>
+      <TABLE cellSpacing=0 cellPadding=0 width=150  border=0>
+        <TR height=55>
+          <TD style="PADDING-LEFT: 7px">
+          <p style="FONT-SIZE: 15px">
+          	队员管理<br>
+          <A href="addStudent.jsp" target="main" >
+          <span id='sp_1' Onclick='_set(sp_1)'>添加队员</span>
+          </A><br>
+          <A href="allStudent.action" target="main" >
+          <span id='sp_1' Onclick='_set(sp_1)'>队员修改</span>
+          </A>
+          </p>
+          </TD>
+         </TR>
+       </TABLE><br>
+      <TABLE cellSpacing=0 cellPadding=0 width=150  border=0>
+        <TR height=55>
+          <TD style="PADDING-LEFT: 7px">
+          <p style="FONT-SIZE: 15px">
+          	报名<br>
+          <A href="registPreItem.action" target="main" >
+          <span id='sp_2' Onclick='_set(sp_2)'>报名</span>
+          </A><br>
+          <A href="all.action" target="main" >
+          <span id='sp_2' Onclick='_set(sp_2)'>退选</span>
+          </A>
+          </p>
+          </TD>
+         </TR>
+       </TABLE>
+      <TABLE cellSpacing=0 cellPadding=0 width=150 border=0>
+        <TR height=55>
+          <TD style="PADDING-LEFT: 7px">
+          <p style="FONT-SIZE: 15px">
+         	 数据统计<br>
+          <A href="#" target="main" >
+                             <span id='sp_2' Onclick='_set(sp_2)'>竞赛队伍统计</span>
+          </A></p>
+          </TD>
+         </TR>
+       </TABLE>
+
+
+     </TD>
+  </TR>
+  </TABLE>
+  
+  </BODY>
+  </HTML>
