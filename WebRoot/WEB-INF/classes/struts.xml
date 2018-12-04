@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="GBK"?>
+<!-- 指定Struts2配置文件的DTD信息 -->
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<!-- Struts2配置文件的根元素 -->
+<struts>
+	<constant name="struts.custom.i18n.resources" value="message"/>
+    <constant name="struts.i18n.encoding" value="UTF-8" />
+	<package name = "student" extends = "struts-default" namespace = "/">
+		 <!--配置自定义的学生权限拦截器  -->
+     	 <interceptors>
+	       <interceptor name="authInterStu" class="cn.zyan.regist.authInterceptor.StudentIct"></interceptor>
+	       <interceptor name="authInterTeam" class="cn.zyan.regist.authInterceptor.TeamInc"></interceptor>
+	    </interceptors>
+		<!-- 学生注册账户 -->
+		<action name = "register" class = "studentAction" method = "register">
+		<param name="savePath">/upload</param>
+		<result name = "register_success">/message.jsp</result>
+		<result name = "input">/student_regist.jsp</result>
+		</action>
+		<!-- 激活账户 -->
+		<action name = "active" class = "studentAction" method = "active">
+		<result name = "active_success">/message.jsp</result>
+		<result name="input">/student_regist.jsp</result>
+		</action>
+		<!-- 检查邮箱是否被注册 -->
+		<action name = "emailCheck" class = "studentAction" method = "Check">
+		<result name = "input">/message.jsp</result>
+		</action>
+		
+		<!-- 学生登录 -->
+		<action name = "studentlogin" class = "studentAction" method = "studentlogin">
+		<result name = "success">/student_index.jsp</result>
+		<result name = "error">/message.jsp</result>
+		<result name = "input">/student_login.jsp</result>
+		</action>
+		<!-- 学生点击报名页面，返回所有比赛项目 -->
+		<action name = "registLookItem" class = "adminAction" method = "registLookItem">
+		<result name = "success">/registItem.jsp</result>
+		</action>
+		<!-- 学生确定报名-->
+		
+		<action name = "registItem" class = "adminAction" method = "registItem">
+		<interceptor-ref name="authInterStu"></interceptor-ref>
+		<interceptor-ref name="defaultStack"></interceptor-ref>
+		<result name = "message">/message.jsp</result>
+		</action>
+		
+		<!-- 查看所有已报名项目-->
+		<action name = "listAllRegisted" class = "studentAction" method = "listAllRegisted">
+		<result name = "success">/student_manager_regist.jsp</result>
+		</action>
+		
+		<!-- 退选已报名项目-->
+		<action name = "withdrawalItem" class = "adminAction" method = "withdrawalItem">
+		<interceptor-ref name="authInterStu"></interceptor-ref>
+		<interceptor-ref name="defaultStack"></interceptor-ref>
+		<result name = "message">/message.jsp</result>
+		</action>
+		
+		<!-- 查看自己信息-->
+		<action name = "lookme" class = "studentAction" method = "lookme">
+		<interceptor-ref name="authInterStu"></interceptor-ref>
+		<interceptor-ref name="defaultStack"></interceptor-ref>
+		<result name = "success">/lookme.jsp</result>
+		<result name = "message">/message.jsp</result>
+		</action>
+		<!-- 团队注册-->
+		<action name = "qisiren" class = "teamAction" method = "qisiren">
+		<result name = "success">/message.jsp</result>
+		</action>
+		
+		<!-- 队名检查-->
+		<action name = "checkTeam" class = "teamAction" method = "checkTeam">
+		<result name = "NONE">/message.jsp</result>
+		</action>
+		
+		<!-- 队名登录-->
+		<action name = "team_login" class = "teamAction" method = "login">
+		<result name = "success">/team/team_index.jsp</result>
+		</action>
+		<!-- 添加队员-->
+		<action name = "addStudent" class = "teamAction" method = "addStudent">
+		<interceptor-ref name="authInterTeam"></interceptor-ref>
+		<interceptor-ref name="defaultStack"></interceptor-ref>
+		<result name = "success">/message.jsp</result>
+		<result name = "message">/message.jsp</result>
+		</action>
+		<!-- 查看队员-->
+		<action name = "allStudent" class = "teamAction" method = "allStudent">
+		<result name = "success">/team/listStu.jsp</result>
+		</action>
+		<!-- 删除队员-->
+		<action name = "stuDelete" class = "teamAction" method = "stuDelete">
+		<interceptor-ref name="authInterTeam"></interceptor-ref>
+		<interceptor-ref name="defaultStack"></interceptor-ref>
+		<result name = "success">/message.jsp</result>
+		</action>
+		<!-- 学生点击报名页面，返回所有比赛项目 -->
+		<action name = "registPreItem" class = "adminAction" method = "registPreItem">
+		<result name = "success">/team/teamRegist.jsp</result>
+		</action>
+		<!-- 队伍报名-->
+		<action name = "teamRegist" class = "adminAction" method = "teamRegist">
+		<interceptor-ref name="authInterTeam"></interceptor-ref>
+		<interceptor-ref name="defaultStack"></interceptor-ref>
+		<result name = "success">/message.jsp</result>
+		<result name = "message">/message.jsp</result>
+		</action>
+		<!-- 队伍查看所有已报名-->
+		<action name = "all" class = "teamAction" method = "all">
+		<result name = "success">/team/team_manager_regist.jsp</result>
+		</action>
+		
+		<!-- 团队退选已报名项目-->
+		<action name = "withdrawal" class = "teamAction" method = "withdrawal">
+		<interceptor-ref name="authInterTeam"></interceptor-ref>
+		<interceptor-ref name="defaultStack"></interceptor-ref>
+		<result name = "message">/message.jsp</result>
+		</action>
+	</package>
+	
+	
+	
+	<package name = "admin" extends = "struts-default" namespace = "/">
+		<!--配置自定义的管理员权限拦截器  -->
+     	<interceptors>
+	       <interceptor name="authInterAdmin" class="cn.zyan.regist.authInterceptor.AuthInterceptor"></interceptor>
+	    </interceptors>
+		<action name = "admin_login" class = "adminAction" method = "login">
+		<result name = "success">/admin/index.jsp</result>
+		<result name = "input">/admin/login.jsp</result>
+		</action>
+		
+		<action name = "addItem" class = "adminAction" method = "addItem">
+		<interceptor-ref name="authInterAdmin"></interceptor-ref>
+		<interceptor-ref name="defaultStack"></interceptor-ref>
+		<result name = "success">/message.jsp</result>
+		<result name = "message">/message.jsp</result>
+		</action>
+		
+		<action name = "listAllItem" class = "adminAction" method = "getItemPage">
+		<result name = "success">/admin/listAllItem.jsp</result>
+		</action>
+		
+		<action name = "itemPreUpdate" class = "adminAction" method = "itemPreUpdate">
+		
+		<result name = "success">/admin/updateItem.jsp</result>
+		</action>
+		
+		<action name = "itemDelete" class = "adminAction" method = "itemDelete">
+		<interceptor-ref name="authInterAdmin"></interceptor-ref>
+		<interceptor-ref name="defaultStack"></interceptor-ref>
+		<result name = "message">/message.jsp</result>
+		</action>
+		
+		<action name = "itemUpdate" class = "adminAction" method = "itemUpdate">
+		<interceptor-ref name="authInterAdmin"></interceptor-ref>
+		<interceptor-ref name="defaultStack"></interceptor-ref>
+		<result name = "message">/message.jsp</result>
+		</action>
+		
+		<action name = "chartTest" class = "adminAction" method = "chartTest">
+		<result name = "success">/admin/chart.jsp</result>
+		</action>
+		
+		<action name = "censusDepartment" class = "chartAction" method = "censusDepartment">
+		<result name = "success">/admin/departmentChart.jsp</result>
+		<result name = "message">/message.jsp</result>
+		</action>
+		<action name = "countItem" class = "chartAction" method = "countItem">
+		<result name = "success">/admin/chart.jsp</result>
+		<result name = "message">/message.jsp</result>
+		</action>
+	</package>
+
+</struts>

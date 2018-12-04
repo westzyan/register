@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="GBK"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+	<!-- 引入外部的属性文件 -->
+	<context:property-placeholder location = "classpath:jdbc.properties"/>
+	<!-- 引入外部的属性文件 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value = "${jdbc.driverClass}"></property>
+		<property name="jdbcUrl" value = "${jdbc.url}"></property>
+		<property name="user" value = "${jdbc.username}"></property>
+		<property name="password" value = "${jdbc.password}"></property>
+		<!-- 每300秒检查所有连接池中的空闲连接 -->
+        <property name="idleConnectionTestPeriod" value="300"></property>
+        <!-- 最大空闲时间,900秒内未使用则连接被丢弃。若为0则永不丢弃 -->
+        <property name="maxIdleTime" value="900"></property>
+        <!-- 最大连接数 -->
+        <property name="maxPoolSize" value="30"></property>
+	</bean>
+	
+	<!-- 配置hibernate的相关属性 -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<!-- 注入连接池 -->
+		<property name="dataSource" ref = "dataSource"></property>
+		<!-- 配置hibernate中的属性 -->
+		<property name="hibernateProperties">
+			<props> 
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+		<!-- 配置hibernate中的属性 -->
+		<property name="mappingResources">
+			<list>
+				<value>cn/zyan/regist/domain/Student.hbm.xml</value>
+				<value>cn/zyan/regist/domain/Team.hbm.xml</value>
+				<value>cn/zyan/regist/domain/Item.hbm.xml</value>
+				<value>cn/zyan/regist/domain/Notice.hbm.xml</value>
+				<value>cn/zyan/regist/domain/Admin.hbm.xml</value>
+			</list>
+		</property>
+	</bean>
+	<!-- 配置action的类 -->
+	<bean id = "studentAction" class="cn.zyan.regist.action.StudentAction" scope = "prototype" >
+		<!-- 手动注入service -->
+		<property name="studentService" ref="studentService"></property>
+	</bean>
+	<bean id = "adminAction" class="cn.zyan.regist.action.AdminAction" scope = "prototype">
+		<!-- 手动注入service -->
+		<property name="adminService" ref="adminService"></property>
+		<property name="teamService" ref="teamService"></property>
+	</bean>
+	<bean id = "teamAction" class="cn.zyan.regist.action.TeamAction" scope = "prototype">
+		<!-- 手动注入service -->
+		<property name="teamService" ref="teamService"></property>
+		<property name="studentService" ref="studentService"></property>
+	</bean>
+	<bean id = "chartAction" class="cn.zyan.regist.action.ChartAction" scope = "prototype">
+		<!-- 手动注入service -->
+		<property name="teamService" ref="teamService"></property>
+		<property name="adminService" ref="adminService"></property>
+	</bean>
+
+	<!-- 配置业务层的类 -->
+	<bean id = "studentService"  class="cn.zyan.regist.service.StudentService" scope = "prototype">
+		<property name="studentDao" ref="studentDao"></property>
+	</bean>
+	
+	<bean id = "adminService"  class="cn.zyan.regist.service.AdminService" scope = "prototype">
+		<property name="itemDao" ref="itemDao"></property>
+		<property name="adminDao" ref="adminDao"></property>
+	</bean>
+	<bean id = "teamService"  class="cn.zyan.regist.service.TeamService" scope = "prototype">
+		<property name="teamDao" ref="teamDao"></property>
+	</bean>
+	
+	<!-- 配置DAO的类 -->
+	<bean id = "studentDao"  class="cn.zyan.regist.dao.impl.StudentDaoImpl" scope = "prototype">
+		<!-- 继承hibernateDaoSupport直接注入 	-->
+	<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<bean id = "itemDao"  class="cn.zyan.regist.dao.impl.ItemDaoImpl" scope = "prototype">
+		<!-- 继承hibernateDaoSupport直接注入 	-->
+	<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<bean id = "adminDao"  class="cn.zyan.regist.dao.AdminDao" scope = "prototype">
+		<!-- 继承hibernateDaoSupport直接注入 	-->
+	<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<bean id = "teamDao"  class="cn.zyan.regist.dao.impl.TeamDaoImpl" scope = "prototype">
+		<!-- 继承hibernateDaoSupport直接注入 	-->
+	<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<!-- 配置事务管理 -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref = "sessionFactory"></property>
+	</bean>
+	<!-- 配置事务的增强 -->
+	<tx:advice id = "txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="find*" propagation="REQUIRED"/>
+			<tx:method name="update*" propagation="REQUIRED"/>
+		</tx:attributes>
+	</tx:advice>
+
+	<!-- 配置切面 -->
+	<aop:config>
+		<!-- 配置切入点 -->
+		<aop:pointcut expression="execution(* cn.zyan.regist.service.AdminService+.*(..))" id="pointcutzyan"/>
+		<!-- 配置切面 -->
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="pointcutzyan"/>
+	</aop:config>
+	<!-- 开启注解事务 -->
+	<!--  <tx:annotation-driven transaction-manager="transactionManager"/>-->
+	
+</beans>
