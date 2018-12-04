@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping	package="cn.zyan.regist.domain">
+	<class name="Team"  table="t_team">
+		<id name = "tid" column = "teamid">
+			<generator class="native"></generator>
+		</id>
+		<property name="name" column = "name"></property>
+		<property name="password" column ="password"></property>
+		<property name="teacher" column = "teacher"></property>
+		
+		<set name="student1Set" cascade="all" lazy="false">
+			<key column="teamid"></key>
+			<many-to-many class="Student" column="studentid"/>
+		</set>
+		<many-to-one name="item" column = "itemid" cascade="all" lazy="false"></many-to-one>
+	</class>
+</hibernate-mapping>
